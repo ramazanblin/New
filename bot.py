@@ -1,4 +1,5 @@
 import os
+import asyncio
 from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler
@@ -27,8 +28,8 @@ def home():
     return "Бот работает!"
 
 if __name__ == "__main__":
-    import asyncio
-    # Запускаем Telegram-бота и Flask-сервер
-    asyncio.run(run_bot())
+    # Запускаем Flask-сервер и Telegram-бота одновременно
+    loop = asyncio.get_event_loop()
+    loop.create_task(run_bot())  # Telegram-бот запускается как фоновая задача
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

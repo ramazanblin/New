@@ -3,24 +3,23 @@ import os
 import threading
 from flask import Flask
 from telegram import Bot, Update
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Application, CommandHandler
 
 # Telegram Bot Setup
 TOKEN = os.getenv("TOKEN")
-bot = Bot(token=TOKEN)
-updater = Updater(token=TOKEN, use_context=True)
-dispatcher = updater.dispatcher
+
+# Создаем объект приложения
+application = Application.builder().token(TOKEN).build()
 
 # Simple /start command
 def start(update: Update, context):
     update.message.reply_text("Привет! Я ваш бот!")
 
-dispatcher.add_handler(CommandHandler("start", start))
+application.add_handler(CommandHandler("start", start))
 
 # Start bot in a separate thread
 def run_bot():
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 threading.Thread(target=run_bot).start()
 
